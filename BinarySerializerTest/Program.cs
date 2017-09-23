@@ -11,13 +11,22 @@ namespace BinarySerializerTest
     {
 		public static void Main(string[] args)
 		{
-//            InfoDict dataObj = new InfoDict();
+            InfoDict dataObj = new InfoDict();
 
-//            dataObj.ReadCSV();
+            Console.WriteLine("Reading data...");
 
-//            dataObj.Save("data.bin");
+            dataObj.ReadCSV();
 
-            InfoDict rehydrated = InfoDict.Load("data.bin");
+            Console.WriteLine("Saving data to binary...");
+
+            dataObj.Save("data.bin");
+
+            Console.WriteLine("Saving data to compressed binary...");
+
+            dataObj.Compress("data.gz");
+
+            Console.WriteLine("Decompressing data...");
+            InfoDict rehydrated = InfoDict.Decompress("data.gz");
 
             Console.WriteLine("Finished!");
 		}
@@ -83,6 +92,35 @@ namespace BinarySerializerTest
                 Console.WriteLine("{0}:{1}", key, data[key].Count);
             }
 
+		}
+
+		public void Save(string sFileName)
+		{
+			using (FileStream oStream = new FileStream(sFileName, FileMode.Create, FileAccess.ReadWrite))
+			{
+				BinaryFormatter bf = new BinaryFormatter();
+				bf.Serialize(oStream, this);
+				oStream.Flush();
+			}
+		}
+
+		public static InfoDict Load(string sFileName)
+		{
+			FileInfo fi = null;
+			InfoDict rehydrated = null;
+
+			fi = new FileInfo(sFileName);
+			if (fi.Exists)
+			{
+				using (FileStream oStream = new FileStream(sFileName, FileMode.Open, FileAccess.Read))
+				{
+					BinaryFormatter bf = new BinaryFormatter();
+					oStream.Position = 0;
+					rehydrated = (InfoDict)bf.Deserialize(oStream);
+				}
+			}
+
+			return rehydrated;
 		}
 
 		public void Compress(string fileName)
