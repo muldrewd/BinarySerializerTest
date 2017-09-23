@@ -14,9 +14,9 @@ namespace BinarySerializerTest
 
             dataObj.ReadCSV();
 
-            dataObj.Save("data");
+            dataObj.Save("data.bin");
 
-            InfoDict rehydrated = InfoDict.Load("data");
+            InfoDict rehydrated = InfoDict.Load("data.bin");
 
             Console.WriteLine("Finished!");
 		}
@@ -41,11 +41,12 @@ namespace BinarySerializerTest
 
                     if (record.GeographicLocation.Contains(':'))
                     {
-                        neighborhood = record.GeographicLocation.Split(':')[1];
+                        neighborhood = record.GeographicLocation.Split(':')[1].Trim();
+                        record.GeographicLocation = neighborhood;
                     }
                     else
                     {
-                        neighborhood = record.GeographicLocation;
+                        neighborhood = record.GeographicLocation.Trim();
                     }
 
                     if (data.ContainsKey(neighborhood))
