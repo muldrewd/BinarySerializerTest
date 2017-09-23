@@ -10,11 +10,11 @@ namespace BinarySerializerTest
     {
 		public static void Main(string[] args)
 		{
-            InfoDict dataObj = new InfoDict();
+//            InfoDict dataObj = new InfoDict();
 
-            dataObj.ReadCSV();
+//            dataObj.ReadCSV();
 
-            dataObj.Save("data.bin");
+//            dataObj.Save("data.bin");
 
             InfoDict rehydrated = InfoDict.Load("data.bin");
 
