@@ -1,0 +1,5 @@
+/Users/dmuldrew/Projects/BinarySerializerTest/BinarySerializerTest/bin/Debug/BinarySerializerTest.exe
+/Users/dmuldrew/Projects/BinarySerializerTest/BinarySerializerTest/bin/Debug/BinarySerializerTest.pdb
+/Users/dmuldrew/Projects/BinarySerializerTest/BinarySerializerTest/obj/x86/Debug/BinarySerializerTest.csproj.CoreCompileInputs.cache
+/Users/dmuldrew/Projects/BinarySerializerTest/BinarySerializerTest/obj/x86/Debug/BinarySerializerTest.exe
+/Users/dmuldrew/Projects/BinarySerializerTest/BinarySerializerTest/obj/x86/Debug/BinarySerializerTest.pdb
