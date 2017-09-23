@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -84,35 +85,47 @@ namespace BinarySerializerTest
 
 		}
 
-		public void Save(string sFileName)
+		public void Compress(string fileName)
 		{
-			using (FileStream oStream = new FileStream(sFileName, FileMode.Create, FileAccess.ReadWrite))
-			{
-				BinaryFormatter bf = new BinaryFormatter();
-				bf.Serialize(oStream, this);
-				oStream.Flush();
-			}
-		}
 
-		public static InfoDict Load(string sFileName)
-		{
-			FileInfo fi = null;
-            InfoDict rehydrated = null;
-
-			fi = new FileInfo(sFileName);
-			if (fi.Exists)
+			using (FileStream compressedFileStream = File.Create(fileName))
 			{
-				using (FileStream oStream = new FileStream(sFileName, FileMode.Open, FileAccess.Read))
+				using (GZipStream compressionStream = new GZipStream(compressedFileStream, CompressionMode.Compress))
 				{
 					BinaryFormatter bf = new BinaryFormatter();
-					oStream.Position = 0;
-                    rehydrated = (InfoDict)bf.Deserialize(oStream);
+					bf.Serialize(compressionStream, this);
+					compressedFileStream.Flush();
 				}
 			}
 
-			return rehydrated;
+
+		}
+
+		public static InfoDict Decompress(string fileName)
+		{
+			FileInfo fi = null;
+			InfoDict rehydrated = null;
+
+			fi = new FileInfo(fileName);
+            if (fi.Exists)
+            {
+                using (FileStream originalFileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                {
+
+                    using (GZipStream decompressionStream = new GZipStream(originalFileStream, CompressionMode.Decompress))
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        originalFileStream.Position = 0;
+                        rehydrated = (InfoDict)bf.Deserialize(decompressionStream);
+                    }
+
+                }
+            }
+
+            return rehydrated;
 		}
     }
+
 
     [Serializable]
     public struct Info 
@@ -139,21 +152,21 @@ namespace BinarySerializerTest
 		    RelationshipToRecipient = lineArray[17];
 		    Kinship                 = lineArray[18];
 		    Veteran                 = lineArray[19];
-		    Eating                  = lineArray[20][0];
-		    Toileting               = lineArray[21][0];
-		    Walking                 = lineArray[22][0];
-		    GettingPlaces           = lineArray[23][0];
-		    Transferring            = lineArray[24][0];
-		    Dressing                = lineArray[25][0];
-		    Bathing                 = lineArray[26][0];
-		    MedicalManagement       = lineArray[27][0];
-		    Cooking                 = lineArray[28][0];
-		    Shopping                = lineArray[29][0];
-		    Chores                  = lineArray[30][0];
-		    Driving                 = lineArray[31][0];
-		    HeavyHousework          = lineArray[32][0];
-		    Phoning                 = lineArray[33][0];
-		    MoneyManagement         = lineArray[34][0];
+		    Eating                  = lineArray[20];
+		    Toileting               = lineArray[21];
+		    Walking                 = lineArray[22];
+		    GettingPlaces           = lineArray[23];
+		    Transferring            = lineArray[24];
+		    Dressing                = lineArray[25];
+		    Bathing                 = lineArray[26];
+		    MedicalManagement       = lineArray[27];
+		    Cooking                 = lineArray[28];
+		    Shopping                = lineArray[29];
+		    Chores                  = lineArray[30];
+		    Driving                 = lineArray[31];
+		    HeavyHousework          = lineArray[32];
+		    Phoning                 = lineArray[33];
+		    MoneyManagement         = lineArray[34];
             Int32.TryParse(lineArray[35], out DivisionID);
             Int32.TryParse(lineArray[36], out ServiceMonth);
             Int32.TryParse(lineArray[37], out Serviceyear);
@@ -186,21 +199,21 @@ namespace BinarySerializerTest
         public string RelationshipToRecipient;
         public string Kinship;
         public string Veteran;
-        public char Eating;
-        public char Toileting;
-        public char Walking;
-        public char GettingPlaces;
-        public char Transferring;
-        public char Dressing;
-        public char Bathing;
-        public char MedicalManagement;
-        public char Cooking;
-        public char Shopping;
-        public char Chores;
-        public char Driving;
-        public char HeavyHousework;
-        public char Phoning;
-        public char MoneyManagement;
+        public string Eating;
+        public string Toileting;
+        public string Walking;
+        public string GettingPlaces;
+        public string Transferring;
+        public string Dressing;
+        public string Bathing;
+        public string MedicalManagement;
+        public string Cooking;
+        public string Shopping;
+        public string Chores;
+        public string Driving;
+        public string HeavyHousework;
+        public string Phoning;
+        public string MoneyManagement;
         public int DivisionID;
         public int ServiceMonth;
         public int Serviceyear;
