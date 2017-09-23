@@ -14,9 +14,9 @@ namespace BinarySerializerTest
 
             dataObj.ReadCSV();
 
-            dataObj.Save("test");
+            dataObj.Save("data");
 
-            InfoDict rehydrated = InfoDict.Load("test");
+            InfoDict rehydrated = InfoDict.Load("data");
 
             Console.WriteLine("Finished!");
 		}
@@ -30,26 +30,35 @@ namespace BinarySerializerTest
         public void ReadCSV()
 		{
 			int count = 0;
+            int goodCount = 0;
 			foreach (string line in File.ReadAllLines(@"../../Aging_and_Disability_Services_-_Client_Level_Data_2016.csv"))
 			{
 
 				try
 				{
 					Info record = new Info(line.Split(',').ToArray());
+                    string neighborhood;
 
-					string neighborhood = record.GeographicLocation.Split(':')[1];
-					//string neighborhood = record.GeographicLocation;
+                    if (record.GeographicLocation.Contains(':'))
+                    {
+                        neighborhood = record.GeographicLocation.Split(':')[1];
+                    }
+                    else
+                    {
+                        neighborhood = record.GeographicLocation;
+                    }
 
-					if (data.ContainsKey(neighborhood))
-					{
-						data[neighborhood].Add(record);
-					}
-					else
-					{
-						data[neighborhood] = new List<Info>() { record };
-					}
-				}
-				catch (Exception e)
+                    if (data.ContainsKey(neighborhood))
+                    {
+                        data[neighborhood].Add(record);
+                    }
+                    else
+                    {
+                        data[neighborhood] = new List<Info>() { record };
+                    }
+                    goodCount++;
+                }
+				catch
 				{
 					Console.WriteLine("Problem at {0}", count);
 				}
@@ -61,7 +70,16 @@ namespace BinarySerializerTest
 				}
 			}
 
-			Console.WriteLine("Finished!");
+            data.Remove(" ");
+            data.Remove("N");
+            data.Remove("");
+
+			Console.WriteLine("Finished making dictionary!");
+
+            foreach (string key in data.Keys)
+            {
+                Console.WriteLine("{0}:{1}", key, data[key].Count);
+            }
 
 		}
 
@@ -77,7 +95,6 @@ namespace BinarySerializerTest
 
 		public static InfoDict Load(string sFileName)
 		{
-			bool bFileExists = false;
 			FileInfo fi = null;
             InfoDict rehydrated = null;
 
@@ -90,7 +107,6 @@ namespace BinarySerializerTest
 					oStream.Position = 0;
                     rehydrated = (InfoDict)bf.Deserialize(oStream);
 				}
-				bFileExists = true;
 			}
 
 			return rehydrated;
