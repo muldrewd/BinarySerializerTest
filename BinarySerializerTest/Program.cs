@@ -4,29 +4,97 @@ using System.IO.Compression;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace BinarySerializerTest
 {
     class MainClass
     {
-		public static void Main(string[] args)
+		public static void Main()
 		{
-            InfoDict dataObj = new InfoDict();
+			//         InfoDict dataObj = new InfoDict();
 
-            Console.WriteLine("Reading data...");
+			//         Console.WriteLine("Reading data...");
+			//         Stopwatch stopWatch = new Stopwatch();
+			//         stopWatch.Start();
 
-            dataObj.ReadCSV();
+			//         dataObj.ReadCSV();
 
-            Console.WriteLine("Saving data to binary...");
+			//         stopWatch.Stop();
+			//         Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
 
-            dataObj.Save("data.bin");
+			//         Console.WriteLine("Saving data to binary...");
+			//         stopWatch = new Stopwatch();
+			//         stopWatch.Start();
 
-            Console.WriteLine("Saving data to compressed binary...");
+			//         dataObj.Save("data.bin");
 
-            dataObj.Compress("data.gz");
+			//stopWatch.Stop();
+			//Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+
+			//         Console.WriteLine("Saving data to compressed binary...");
+			//stopWatch = new Stopwatch();
+			//stopWatch.Start();
+
+			//         dataObj.Compress("data.gz");
+
+			//stopWatch.Stop();
+			//Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+
+			//Console.WriteLine("Loading data...");
+			//Stopwatch stopWatch = new Stopwatch();
+			//stopWatch.Start();
+
+			//InfoDict rehydrated = InfoDict.Load("data.bin");
+
+			//stopWatch.Stop();
+			//Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
 
             Console.WriteLine("Decompressing data...");
-            InfoDict rehydrated = InfoDict.Decompress("data.gz");
+			Stopwatch stopWatch = new Stopwatch();
+			stopWatch.Start();
+
+            InfoDict rehydrated2 = InfoDict.Decompress("data.gz");
+
+			stopWatch.Stop();
+			Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+
+            //Console.WriteLine("Writing data to CSV...");
+            //stopWatch = new Stopwatch();
+            //stopWatch.Start();
+
+            //         rehydrated2.WriteCSV("agingData.csv");
+
+            //stopWatch.Stop();
+            //Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+
+            //var q2 = from p in rehydrated2.data["Capital Hill"]
+            //         group p by p.ClientID into g
+            //         select new { key = g.Key, count = g.ActivityID.Count() };
+
+            //foreach(var item in q2)
+            //{
+            //    Console.WriteLine($"{item.key}:{item.averagePrice}");
+            //}
+
+            foreach (var location in rehydrated2.data.Keys)
+            {
+                var q2 = rehydrated2.data[location].GroupBy(n => n.ClientID).
+                Select(g =>
+                new
+                {
+                    count = g.Count()
+                });
+
+                int sum = 0;
+                foreach (var nameGroup in q2)
+                {
+                    sum += nameGroup.count;
+                }
+
+                Console.WriteLine($"{location}:{(double)sum / q2.Count()}");
+            }
 
             Console.WriteLine("Finished!");
 		}
@@ -36,6 +104,32 @@ namespace BinarySerializerTest
     public class InfoDict
     {
         public Dictionary<string, List<Info>> data = new Dictionary<string, List<Info>>();
+
+        public void WriteCSV(string fileName)
+        {
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
+            {
+                var flatData = data.Values.ToList();
+				foreach (var field in typeof(Info).GetFields())
+				{
+					file.Write(($"{field.Name + ','}"));
+				}
+				file.Write("\n");
+
+                foreach (var list in flatData)
+                {
+                    foreach (var info in list)
+                    {
+                        foreach (var field in typeof(Info).GetFields())
+                        {
+                            file.Write(($"{field.GetValue(info).ToString() + ','}"));
+                        }
+                        file.Write("\n");
+                    }
+                }
+            }
+        }
 
         public void ReadCSV()
 		{
@@ -186,8 +280,8 @@ namespace BinarySerializerTest
 		    Homeless                = lineArray[13];
 		    DisabilityStatus        = lineArray[14];
 		    Unincorporated          = lineArray[15];
-		    NumberofChildren        = lineArray[16];
-		    RelationshipToRecipient = lineArray[17];
+            Int32.TryParse(lineArray[16], out NumberofChildren);
+            Int32.TryParse(lineArray[17], out RelationshipToRecipient);
 		    Kinship                 = lineArray[18];
 		    Veteran                 = lineArray[19];
 		    Eating                  = lineArray[20];
@@ -233,8 +327,8 @@ namespace BinarySerializerTest
         public string Homeless;
         public string DisabilityStatus;
         public string Unincorporated;
-        public string NumberofChildren;
-        public string RelationshipToRecipient;
+        public int NumberofChildren;
+        public int RelationshipToRecipient;
         public string Kinship;
         public string Veteran;
         public string Eating;
