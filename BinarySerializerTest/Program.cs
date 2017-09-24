@@ -13,34 +13,34 @@ namespace BinarySerializerTest
     {
 		public static void Main()
 		{
-			//         InfoDict dataObj = new InfoDict();
+            InfoDict dataObj = new InfoDict();
 
-			//         Console.WriteLine("Reading data...");
-			//         Stopwatch stopWatch = new Stopwatch();
-			//         stopWatch.Start();
+            Console.WriteLine("Reading data...");
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-			//         dataObj.ReadCSV();
+            dataObj.ReadCSV();
 
-			//         stopWatch.Stop();
-			//         Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+            stopWatch.Stop();
+            Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
 
-			//         Console.WriteLine("Saving data to binary...");
-			//         stopWatch = new Stopwatch();
-			//         stopWatch.Start();
+            Console.WriteLine("Saving data to binary...");
+            stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-			//         dataObj.Save("data.bin");
+            dataObj.Save("data.bin");
 
-			//stopWatch.Stop();
-			//Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+            stopWatch.Stop();
+            Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
 
-			//         Console.WriteLine("Saving data to compressed binary...");
-			//stopWatch = new Stopwatch();
-			//stopWatch.Start();
+            Console.WriteLine("Saving data to compressed binary...");
+            stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-			//         dataObj.Compress("data.gz");
+            dataObj.Compress("data.gz");
 
-			//stopWatch.Stop();
-			//Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
+            stopWatch.Stop();
+            Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
 
 			//Console.WriteLine("Loading data...");
 			//Stopwatch stopWatch = new Stopwatch();
@@ -52,7 +52,7 @@ namespace BinarySerializerTest
 			//Console.WriteLine("{0} ms elapsed", stopWatch.ElapsedMilliseconds);
 
             Console.WriteLine("Decompressing data...");
-			Stopwatch stopWatch = new Stopwatch();
+			stopWatch = new Stopwatch();
 			stopWatch.Start();
 
             InfoDict rehydrated2 = InfoDict.Decompress("data.gz");
@@ -98,6 +98,27 @@ namespace BinarySerializerTest
 
             Console.WriteLine("Finished!");
 		}
+
+   //     public static void PrintMeans(Action grouping, Dictionary<string, List<Info>> data)
+   //     {
+			//foreach (var location in data.Keys)
+			//{
+			//	var q2 = data[location].GroupBy(grouping()).
+			//	Select(g =>
+			//	new
+			//	{
+			//		count = g.Count()
+			//	});
+
+			//	int sum = 0;
+			//	foreach (var nameGroup in q2)
+			//	{
+			//		sum += nameGroup.count;
+			//	}
+
+			//	Console.WriteLine($"{location}:{(double)sum / q2.Count()}");
+			//}
+        //}
     }
 
     [Serializable]
